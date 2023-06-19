@@ -6,22 +6,34 @@ fn main() {
     let mut counter: u32 = 0;
     let mut right = Vec::new();
     let mut dont = Vec::new();
+    }
+
     loop {
         let letter = ask_char();
         counter += 1;
 
         if word.chars().any(|c| c.to_ascii_lowercase() == letter.to_ascii_lowercase()) {
-            println!("Yes, {:?} contains the letter {}", word, letter);
-            println!("{}", counter);
-            add_char(&mut right, letter);
-        } else {
-            println!("No, {:?} does not contain the letter {}", word, letter);
-            println!("{}", counter);
-            add_char(&mut dont, letter);
-        }
-        
-        verify_word(&mut right, &word);
+                println!("Yes, the word contains the letter {}", letter);
+                println!("{}", counter);
+                add_char(&mut right, letter);
+        } 
+        else {
+            loop {
+                if dont.contains(&letter) {
+                    println!("This letter has already been entered");
+                    break
+                }
 
+                else {
+                    println!("{}", counter);
+                    add_char(&mut dont, letter);
+                    println!("No, {:?} does not contain the letter {}", word, letter);
+                    break;
+                }
+            }
+        }
+
+        verify_word(&mut right, &word);
         if verify_word(&mut right, &word) {
             println!("YOU WIN !");
             break;
@@ -74,3 +86,21 @@ fn verify_word(vec: &mut Vec<char>, word: &str) -> bool {
         false
     }
 }
+
+// Experimental
+// fn count_letter_occurrences(word: &str) -> Vec<(char, i32)> {
+//     let mut occurrences = Vec::new();
+//     let mut counts = std::collections::HashMap::new();
+
+//     for letter in word.chars() {
+//         *counts.entry(letter).or_insert(0) += 1;
+//     }
+
+//     for (letter, count) in counts {
+//         if count > 1 {
+//             occurrences.push((letter, count));
+//         }
+//     }
+
+//     occurrences
+// }
