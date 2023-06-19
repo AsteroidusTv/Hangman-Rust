@@ -15,14 +15,16 @@ fn main() {
             println!("Oui, {:?} contient la lettre {}", word, letter);
             println!("{}", counter);
             add_char(&mut right, letter);
+            verify_word(&mut right, word);
         } else {
             println!("Non, {:?} ne contient pas la lettre {}", word, letter);
             println!("{}", counter);
             add_char(&mut dont, letter);
+            verify_word(&mut right, word);
             if counter == 10 {
-                println!("Tu as perdu !")
+            println!("Tu as perdu !")
             }
-        }
+        };
     }
 }
 
@@ -50,6 +52,10 @@ fn verify_word(vec: &mut Vec<char>, word: &str) -> bool {
 
     if vector_char.len() != word_chars.len() {
         return false;
+    }
+
+    else {
+      println!("Oui oui oui") 
     }
 
     vector_char == word_chars
