@@ -6,16 +6,37 @@ fn main() {
     let mut counter: u32 = 0;
     let mut right = Vec::new();
     let mut dont = Vec::new();
-    }
+    let duplicates = count_duplicate_letters(&word);
+    
 
     loop {
         let letter = ask_char();
         counter += 1;
 
         if word.chars().any(|c| c.to_ascii_lowercase() == letter.to_ascii_lowercase()) {
-                println!("Yes, the word contains the letter {}", letter);
-                println!("{}", counter);
-                add_char(&mut right, letter);
+            loop {
+                if dont.contains(&letter) {
+                    println!("This letter has already been entered");
+                    break
+                }
+                else {
+                    for (c, count) in &duplicates {
+                        println!("Letter '{}' appears {} times.", c, count);
+                        if count > &1 {
+                            println!("Yes, the word contains the letter {}", letter);
+                            println!("{}", counter);
+                            for _ in 0..2 {
+                                add_char(&mut right, letter);
+                            }
+                        }
+                        else {
+                            println!("Yes, the word contains the letter {}", letter);
+                            println!("{}", counter);
+                            add_char(&mut right, letter);
+                        }
+                    }
+                }
+            }
         } 
         else {
             loop {
@@ -23,7 +44,6 @@ fn main() {
                     println!("This letter has already been entered");
                     break
                 }
-
                 else {
                     println!("{}", counter);
                     add_char(&mut dont, letter);
@@ -87,20 +107,19 @@ fn verify_word(vec: &mut Vec<char>, word: &str) -> bool {
     }
 }
 
-// Experimental
-// fn count_letter_occurrences(word: &str) -> Vec<(char, i32)> {
-//     let mut occurrences = Vec::new();
-//     let mut counts = std::collections::HashMap::new();
 
-//     for letter in word.chars() {
-//         *counts.entry(letter).or_insert(0) += 1;
-//     }
+fn count_duplicate_letters(input: &str) -> Vec<(char, usize)> {
+    let mut counts: Vec<(char, usize)> = Vec::new();
+    
+    for c in input.chars().filter(|&c| c.is_alphabetic()) {
+        let count = input.matches(c).count();
+        
+        if count > 1 && !counts.iter().any(|&(ch, _)| ch == c) {
+            counts.push((c, count));
+        }
+    }
+    
+    counts
+}
 
-//     for (letter, count) in counts {
-//         if count > 1 {
-//             occurrences.push((letter, count));
-//         }
-//     }
 
-//     occurrences
-// }
