@@ -11,14 +11,11 @@ fn main() {
         let letter = ask_char();
         let count = count_occurrences(letter, &word);
         counter += 1;
-        println!("Number of a in word {count}");
 
         if word.chars().any(|c| c.to_ascii_lowercase() == letter.to_ascii_lowercase()) {
             if dont.contains(&letter) {
-                println!("{}", counter);
-                add_char(&mut dont, letter);
-                println!("Yes, the word contains the letter {}", letter);
-                break;
+                println!("This letter has already been entered");
+                break
             }
             else {
                 println!("Yes, the word contains the letter {}", letter);
@@ -45,8 +42,8 @@ fn main() {
             }
         }
 
-        println!("Yes : {:?}, No : {:?}", right, dont);
-        
+        println!("Right letters : {:?}, False letters : {:?}", right, dont);
+
         verify_word(&mut right, &word);
         if verify_word(&mut right, &word) {
             println!("You win !");
