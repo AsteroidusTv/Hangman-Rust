@@ -7,10 +7,6 @@ fn main() {
     let mut right = Vec::new();
     let mut dont = Vec::new();
 
-
-
-
-
     loop {
         let letter = ask_char();
         let count = count_occurrences(letter, &word);
@@ -22,7 +18,6 @@ fn main() {
                 println!("{}", counter);
                 add_char(&mut dont, letter);
                 println!("Yes, the word contains the letter {}", letter);
-                println!("Yes : {:?}, No : {:?}", right, dont);
                 break;
             }
             else {
@@ -30,17 +25,14 @@ fn main() {
                 println!("{}", counter);
                 for _ in 0..count {
                     add_char(&mut right, letter);
-                    println!("Hello")
                 }
-                println!("Yes : {:?}, No : {:?}", right, dont)
-            } 
-                
-        } 
+            }                 
+        }
+
         else {
             loop {
                 if dont.contains(&letter) {
                     println!("This letter has already been entered");
-
                     break
                 }
 
@@ -53,16 +45,18 @@ fn main() {
             }
         }
 
+        println!("Yes : {:?}, No : {:?}", right, dont);
+        
         verify_word(&mut right, &word);
         if verify_word(&mut right, &word) {
-            println!("YOU WIN !");
+            println!("You win !");
             break;
         }
         
         if counter == 10 {
             println!("You lost!");
             break;
-        }
+        } 
     }
 }
 
@@ -109,14 +103,3 @@ fn verify_word(vec: &mut Vec<char>, word: &str) -> bool {
 fn count_occurrences(letter: char, text: &str) -> usize {
     text.chars().filter(|&c| c == letter).count()
 }
-
-
-
-
-
-
-
-
-
-
-
