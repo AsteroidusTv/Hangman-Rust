@@ -1,11 +1,11 @@
 use std::io;
 use std::io::prelude::*;
+use std::convert::TryInto;
 
 fn main() {
     let word = ask_word();
     let attempts: u32 = ask_number();
     let mut counter: u32 = word.len().try_into().unwrap();
-    println!("{counter}");
     let mut right = Vec::new();
     let mut dont = Vec::new();
 
@@ -24,7 +24,8 @@ fn main() {
                 for _ in 0..count {
                     add_char(&mut right, letter);
                 }
-             
+                let result = process_string(&word, right.clone());
+                println!("The word : {:?}", result);
             }
 
         } else {
@@ -38,11 +39,9 @@ fn main() {
             }
         }
 
-        let result = process_string(&word, right.clone());
-        println!("The word : {:?}", result);
-
         if verify_word(&right, &word) {
-            println!("You win!");
+            println!("You win!, the word was {word}");
+
             break;
         }
 
@@ -80,17 +79,24 @@ fn ask_char() -> char {
 }
 
 fn ask_number() -> u32 {
-    let mut line = String::new();
-    println!("Enter the number of attempts for the player(s) (by default there is the same number of attempts as the number of letters in the word) : ");
-    std::io::stdin()
-        .read_line(&mut line)
-        .unwrap();
-    let number: u32 = line
-        .trim()
-        .parse()
-        .unwrap();
-    number
+    loop {
+        let mut line = String::new();
+        println!("Enter the number of attempts for the player(s) (by default there is the same number of attempts as the number of letters in the word): ");
+
+        std::io::stdin()
+            .read_line(&mut line)
+            .expect("Failed to read line");
+
+        match line.trim().parse() {
+            Ok(number) => return number,
+            Err(_) => {
+                println!("Invalid input. Please enter a valid number.");
+                continue;
+            }
+        }
+    }
 }
+
 
 fn add_char(vec: &mut Vec<char>, letter: char) {
     vec.push(letter);
