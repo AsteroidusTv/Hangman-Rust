@@ -3,7 +3,9 @@ use std::io::prelude::*;
 
 fn main() {
     let word = ask_word();
-    let mut counter: u32 = 0;
+    let attempts: u32 = ask_number();
+    let mut counter: u32 = word.len().try_into().unwrap();
+    println!("{counter}");
     let mut right = Vec::new();
     let mut dont = Vec::new();
 
@@ -15,18 +17,20 @@ fn main() {
         if word.chars().any(|c| c.to_ascii_lowercase() == letter.to_ascii_lowercase()) {
             if dont.contains(&letter) {
                 println!("This letter has already been entered");
-                break;
+                continue;
             } else {
                 println!("Yes, the word contains the letter {}", letter);
                 println!("{}", counter);
                 for _ in 0..count {
                     add_char(&mut right, letter);
                 }
+             
             }
+
         } else {
             if dont.contains(&letter) {
                 println!("This letter has already been entered");
-                break;
+                continue;
             } else {
                 println!("{}", counter);
                 add_char(&mut dont, letter);
@@ -34,19 +38,19 @@ fn main() {
             }
         }
 
-        sort_vector_by_string(&word, &mut right);
-        println!("{:?}", right);
-        println!("False letters: {:?}", dont);
+        let result = process_string(&word, right.clone());
+        println!("The word : {:?}", result);
 
         if verify_word(&right, &word) {
             println!("You win!");
             break;
         }
 
-        if counter == 10 {
+        if counter == attempts {
             println!("You lost!");
             break;
         }
+    
     }
 }
 
@@ -75,6 +79,19 @@ fn ask_char() -> char {
         .to_ascii_lowercase()
 }
 
+fn ask_number() -> u32 {
+    let mut line = String::new();
+    println!("Enter the number of attempts for the player(s) (by default there is the same number of attempts as the number of letters in the word) : ");
+    std::io::stdin()
+        .read_line(&mut line)
+        .unwrap();
+    let number: u32 = line
+        .trim()
+        .parse()
+        .unwrap();
+    number
+}
+
 fn add_char(vec: &mut Vec<char>, letter: char) {
     vec.push(letter);
     println!("{:?}", vec);
@@ -94,18 +111,30 @@ fn count_occurrences(letter: char, text: &str) -> usize {
     text.chars().filter(|&c| c == letter).count()
 }
 
-fn sort_vector_by_string(input_string: &str, input_vector: &mut Vec<char>) {
-    let mut sorted_chars = Vec::new();
+fn process_string(input: &str, mut vector: Vec<char>) -> Vec<char> {
+    vector.sort_by(|a, b| {
+        input.find(*a).unwrap_or(input.len()).cmp(&input.find(*b).unwrap_or(input.len()))
+    });
 
-    for c in input_string.chars() {
-        if let Some(index) = input_vector.iter().position(|&x| x == c) {
-            sorted_chars.push(input_vector[index]);
-            input_vector.remove(index);
-        } else {
-            sorted_chars.push('_');
+    let mut result = vec!['_'; input.len()];
+
+    let mut input_index = 0;
+    let mut vector_index = 0;
+
+    while input_index < input.len() {
+        if vector_index < vector.len() && vector[vector_index] == input.chars().nth(input_index).unwrap() {
+            result[input_index] = vector[vector_index];
+            vector_index += 1;
         }
+
+        input_index += 1;
     }
 
-    sorted_chars.extend_from_slice(input_vector);
-    *input_vector = sorted_chars;
+    result
 }
+
+
+
+
+
+
